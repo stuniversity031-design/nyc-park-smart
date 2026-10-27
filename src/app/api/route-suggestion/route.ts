@@ -17,7 +17,7 @@ export async function GET(req: Request) {
       "You are a NYC parking and traffic expert. Using the live traffic data provided, generate a short, practical Smart Route tip for today. Mention specific roads by name. Keep it under 40 words. Do not use markdown formatting.";
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: [
         { role: "system", content: systemPrompt },
         {
@@ -26,7 +26,7 @@ export async function GET(req: Request) {
         },
       ],
       temperature: 0.7,
-      max_tokens: 100,
+      max_tokens: 600,
     });
 
     const suggestion = completion.choices[0]?.message?.content || "No suggestion available.";

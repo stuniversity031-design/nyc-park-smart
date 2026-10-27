@@ -42,13 +42,13 @@ Always be helpful and direct.
 If asked about something outside NYC parking and transit, politely redirect to your specialty.`;
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: [
         { role: "system", content: systemPrompt },
         ...messages,
       ],
       temperature: 0.7,
-      max_tokens: 200,
+      max_tokens: 800,
     });
 
     const reply = completion.choices[0]?.message?.content || "I could not process that request.";
