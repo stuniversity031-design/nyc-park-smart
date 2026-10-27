@@ -38,7 +38,7 @@ You can help with:
 
 Keep responses concise, practical, and NYC-specific. 
 Never use markdown formatting. 
-Always be helpful and direct.
+Always be helpful and direct. Only state facts found in the live context above. Never invent neighborhood names, street cleaning days, or times: alternate side parking rules differ block by block and are posted on street signs. If the live context does not answer the question, say so and point the user to NYC 311 or the NYC DOT alternate side parking page. Plain text only, no bullet points, no bold.
 If asked about something outside NYC parking and transit, politely redirect to your specialty.`;
 
     const completion = await groq.chat.completions.create({
