@@ -147,7 +147,7 @@ useEffect(() => {
             zip: activeZip,
             borough,
             weather: weather ? `${Math.round(weather.current.main.temp)}F, ${weather.current.weather[0]?.description}` : "Unknown",
-            aspStatus: asp?.suspendedToday ? `Suspended - ${asp.suspensionReason}` : `In effect - ${asp?.standardSchedule.time}`,
+            aspStatus: asp?.suspendedToday ? `Suspended - ${asp.suspensionReason}` : "No holiday suspension today. Rules vary by block, check the posted sign.",
             nextSuspension: asp?.nextSuspension ? `${asp.nextSuspension.date} (${asp.nextSuspension.reason})` : "None upcoming",
             bqeStatus: bqe ? `${bqe.status} (${bqe.durationMin} min)` : "Unknown",
             lieStatus: lie ? `${lie.status} (${lie.durationMin} min)` : "Unknown",
@@ -177,7 +177,7 @@ return (
       {/* NOTIFICATION BAR */}
       <div style={{ background: "#F7C600", color: "#1A1C1E", fontSize: "12px", fontWeight: 700, padding: "8px 24px", textTransform: "uppercase", letterSpacing: "0.08em", display: "flex", gap: "16px", alignItems: "center" }}>
         <span style={{ background: "#1A1C1E", color: "#F7C600", padding: "2px 8px", fontSize: "9px", fontWeight: 800, letterSpacing: "0.15em" }}>LIVE</span>
-        <span>ASP {asp?.suspendedToday ? `SUSPENDED — ${asp.suspensionReason}` : "IN EFFECT"} · Next suspension: {asp?.nextSuspension?.date || "TBD"} · {borough} · {mounted ? time.toLocaleTimeString() : "--:--:--"}</span>
+        <span>ASP {asp?.suspendedToday ? `SUSPENDED — ${asp.suspensionReason}` : "NO HOLIDAY SUSPENSION"} · Next suspension: {asp?.nextSuspension?.date || "TBD"} · {borough} · {mounted ? time.toLocaleTimeString() : "--:--:--"}</span>
       </div>
 
       {/* HERO */}
@@ -215,7 +215,7 @@ return (
         {/* ASP */}
         <div style={{ gridColumn: "span 4", background: "#0057A8", borderRadius: "4px", padding: "20px", borderTop: "3px solid #F7C600" }}>
           <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.6, marginBottom: "8px" }}>Alternate Side Parking</div>
-          <div style={{ fontSize: "16px", fontWeight: 700 }}>{asp?.suspendedToday ? `Suspended — ${asp.suspensionReason}` : `In effect · ${asp?.standardSchedule.days.join(" & ")} ${asp?.standardSchedule.time}`}</div>
+          <div style={{ fontSize: "16px", fontWeight: 700 }}>{asp?.suspendedToday ? `Suspended — ${asp.suspensionReason}` : "No holiday suspension today. Check your posted street sign."}</div>
           {asp?.nextSuspension && <div style={{ fontSize: "11px", opacity: 0.7, marginTop: "6px" }}>Next suspension: {asp.nextSuspension.date} ({asp.nextSuspension.reason})</div>}
           <div style={{ display: "flex", gap: "8px", marginTop: "14px", flexWrap: "wrap" }}>
             {["2003 Jaguar", "2019 Accord"].map(v => (
@@ -333,7 +333,7 @@ return (
           <div style={{ background: "#242628", borderRadius: "4px", padding: "16px", flex: 1, borderTop: "3px solid #E85D04" }}>
             <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "10px" }}>NYC Headlines</div>
             {[
-              { src: "NYC DOT", h: `ASP ${asp?.suspendedToday ? "suspended today" : "in effect"} — ${asp?.suspendedToday ? asp.suspensionReason : asp?.standardSchedule.time}` },
+              { src: "NYC DOT", h: `ASP ${asp?.suspendedToday ? "suspended today" : "not suspended for a holiday"} — ${asp?.suspendedToday ? asp.suspensionReason : "check your posted sign"}` },
               { src: "MTA", h: mtaAlerts[0]?.header || "Checking for alerts..." },
               { src: "311", h: complaints[0] ? `${complaints[0].type} reported at ${complaints[0].address}` : "No recent complaints" },
             ].map((n, i) => (
@@ -407,7 +407,7 @@ return (
             <div style={{ background: "#2E3033", borderRadius: "2px", padding: "14px", marginBottom: "20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                 <span style={{ color: "#888" }}>Today</span>
-                <span style={{ fontWeight: 600 }}>{asp?.suspendedToday ? `Suspended — ${asp.suspensionReason}` : asp?.standardSchedule.time}</span>
+                <span style={{ fontWeight: 600 }}>{asp?.suspendedToday ? `Suspended — ${asp.suspensionReason}` : "Check your posted sign"}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", padding: "4px 0" }}>
                 <span style={{ color: "#888" }}>Next suspension</span>
