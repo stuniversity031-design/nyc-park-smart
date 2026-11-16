@@ -60,6 +60,7 @@ export default function ParkSmartDashboard() {
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
   const [liveMeters, setLiveMeters] = useState<{ street: string; between: string; hours: string; borough: string }[]>([]);
   const [liveGarages, setLiveGarages] = useState<{ name: string; address: string; zip: string; borough: string; distance: number }[]>([]);
+  const [marketItems, setMarketItems] = useState<{ t: string; v: string; c: string; up: boolean }[]>([]);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: "Hi! I am your NYC Park Smart assistant. Ask me anything about parking, traffic, MTA alerts, or street rules in your area." }
@@ -95,6 +96,7 @@ useEffect(() => {
     setRouteSuggestion("Loading today's route...");
     fetch(`/api/meters?lat=${c.lat}&lon=${c.lon}`).then((r) => r.json()).then((d) => setLiveMeters(d.meters || [])).catch(() => setLiveMeters([]));
     fetch(`/api/garages?zip=${zip}&lat=${c.lat}&lon=${c.lon}`).then((r) => r.json()).then((d) => setLiveGarages(d.garages || [])).catch(() => setLiveGarages([]));
+    fetch("/api/market").then((r) => r.json()).then((d) => setMarketItems(d.items || [])).catch(() => setMarketItems([]));
     try {
       const [weatherRes, aspRes, routeRes, trafficRes, complaints311Res, mtaRes] = await Promise.all([
         fetch(`/api/weather?lat=${c.lat}&lon=${c.lon}`).then(r => r.json()),
@@ -327,14 +329,9 @@ return (
         {/* MARKET + NEWS */}
         <div style={{ gridColumn: "span 6", display: "flex", flexDirection: "column", gap: "14px" }}>
           <div style={{ background: "#242628", borderRadius: "4px", padding: "16px", borderTop: "3px solid #1A7FD4" }}>
-            <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "10px" }}>Market Snapshot · Sample data</div>
+            <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "10px" }}>Crypto Prices · Live · Source: CoinGecko</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "8px" }}>
-              {[
-                { t: "DOW", v: "42,918", c: "+0.34%", up: true },
-                { t: "NASDAQ", v: "19,462", c: "+0.61%", up: true },
-                { t: "BTC", v: "$107K", c: "-1.2%", up: false },
-                { t: "GOLD", v: "$3,287", c: "+0.18%", up: true },
-              ].map((m, i) => (
+              {marketItems.map((m, i) => (
                 <div key={i} style={{ background: "#2E3033", borderRadius: "2px", padding: "8px" }}>
                   <div style={{ fontSize: "9px", color: "#888" }}>{m.t}</div>
                   <div style={{ fontSize: "13px", fontWeight: 700 }}>{m.v}</div>
