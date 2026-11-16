@@ -259,7 +259,7 @@ return (
 
         {/* GARAGE FINDER */}
         <div style={{ gridColumn: "span 4", background: "#242628", borderRadius: "4px", padding: "20px", borderTop: "3px solid #F7C600" }}>
-          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>Garage Finder · {borough}</div>
+          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>Garage Finder · {borough} · Sample data</div>
           {garages.map((g, i) => (
             <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < garages.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
               <div>
@@ -273,7 +273,7 @@ return (
 
         {/* METERS */}
         <div style={{ gridColumn: "span 4", background: "#242628", borderRadius: "4px", padding: "20px", borderTop: "3px solid #4A4D52" }}>
-          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>Parking Meters · {borough}</div>
+          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>Parking Meters · {borough} · Sample data</div>
           {meters.map((m, i) => (
             <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: i < meters.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none", fontSize: "12px" }}>
               <div>
@@ -318,7 +318,7 @@ return (
         {/* MARKET + NEWS */}
         <div style={{ gridColumn: "span 6", display: "flex", flexDirection: "column", gap: "14px" }}>
           <div style={{ background: "#242628", borderRadius: "4px", padding: "16px", borderTop: "3px solid #1A7FD4" }}>
-            <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "10px" }}>Market Snapshot</div>
+            <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "10px" }}>Market Snapshot · Sample data</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "8px" }}>
               {[
                 { t: "DOW", v: "42,918", c: "+0.34%", up: true },
