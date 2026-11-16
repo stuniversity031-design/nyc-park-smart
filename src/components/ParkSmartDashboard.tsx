@@ -58,6 +58,7 @@ export default function ParkSmartDashboard() {
   const [borough, setBorough] = useState<Borough>("Manhattan");
   const [exitModalOpen, setExitModalOpen] = useState(false);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
+  const [liveMeters, setLiveMeters] = useState<{ street: string; between: string; hours: string; borough: string }[]>([]);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: "Hi! I am your NYC Park Smart assistant. Ask me anything about parking, traffic, MTA alerts, or street rules in your area." }
@@ -91,6 +92,7 @@ useEffect(() => {
 
   const fetchAllData = async (c: { lat: number; lon: number }, zip: string) => {
     setRouteSuggestion("Loading today's route...");
+    fetch(`/api/meters?lat=${c.lat}&lon=${c.lon}`).then((r) => r.json()).then((d) => setLiveMeters(d.meters || [])).catch(() => setLiveMeters([]));
     try {
       const [weatherRes, aspRes, routeRes, trafficRes, complaints311Res, mtaRes] = await Promise.all([
         fetch(`/api/weather?lat=${c.lat}&lon=${c.lon}`).then(r => r.json()),
@@ -273,22 +275,22 @@ return (
 
         {/* METERS */}
         <div style={{ gridColumn: "span 4", background: "#242628", borderRadius: "4px", padding: "20px", borderTop: "3px solid #4A4D52" }}>
-          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>Parking Meters · {borough} · Sample data</div>
-          {meters.map((m, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: i < meters.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none", fontSize: "12px" }}>
-              <div>
-                <div style={{ fontWeight: 600 }}>{m.street}</div>
-                <div style={{ fontSize: "10px", color: "#888" }}>{m.hours}</div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ color: "#F7C600", fontWeight: 700 }}>$3.50/hr</div>
-                <div style={{ fontSize: "10px", color: "#888" }}>{m.dist}</div>
-              </div>
+          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "4px" }}>Parking Meters · Near {activeZip}</div>
+          <div style={{ fontSize: "10px", color: "#666", marginBottom: "10px" }}>Source: NYC DOT via NYC Open Data · hours as posted</div>
+          {liveMeters.length === 0 ? (
+            <div style={{ fontSize: "12px", color: "#888" }}>No metered blocks found nearby.</div>
+          ) : liveMeters.map((m, i) => (
+            <div key={i} style={{ padding: "9px 0", borderBottom: i < liveMeters.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none", fontSize: "12px" }}>
+              <div style={{ fontWeight: 600 }}>{m.street}</div>
+              <div style={{ fontSize: "10px", color: "#888", marginTop: "1px" }}>{m.between}</div>
+              <div style={{ fontSize: "10px", color: "#F7C600", marginTop: "3px" }}>{m.hours.replace(/Com/g, "Commercial").replace(/Pas/g, "Passenger")}</div>
             </div>
           ))}
+          <div style={{ fontSize: "10px", color: "#666", marginTop: "10px" }}>Rates are not included in the meter dataset. Check the meter or the ParkNYC app.</div>
         </div>
 
-        {/* NYC 311 */}
+        
+{/* NYC 311 */}
         <div style={{ gridColumn: "span 4", background: "#242628", borderRadius: "4px", padding: "20px", borderTop: "3px solid #E85D04" }}>
           <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>NYC 311 · Parking Complaints · {activeZip}</div>
           {complaints.length === 0 ? (
