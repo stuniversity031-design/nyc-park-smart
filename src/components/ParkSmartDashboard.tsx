@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { getBoroughFromZip, GARAGES, METERS, Borough } from "@/lib/boroughData";
+import MoreInfo from "@/components/MoreInfo";
 
 interface WeatherData {
   current: {
@@ -56,6 +57,7 @@ export default function ParkSmartDashboard() {
   const [coords, setCoords] = useState({ lat: 40.7549, lon: -73.9840 });
   const [borough, setBorough] = useState<Borough>("Manhattan");
   const [exitModalOpen, setExitModalOpen] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: "Hi! I am your NYC Park Smart assistant. Ask me anything about parking, traffic, MTA alerts, or street rules in your area." }
@@ -104,6 +106,7 @@ useEffect(() => {
       setTraffic(trafficRes.corridors || []);
       setComplaints(complaints311Res.complaints || []);
       setMtaAlerts(mtaRes.alerts || []);
+      setUpdatedAt(new Date());
     } catch (err) {
       setRouteSuggestion("Route suggestion unavailable.");
     }
@@ -201,6 +204,7 @@ return (
               <button onClick={handleZipSearch} style={{ background: "#F7C600", color: "#1A1C1E", fontWeight: 800, fontSize: "11px", padding: "10px 16px", border: "none", borderRadius: "2px", cursor: "pointer", letterSpacing: "0.08em", textTransform: "uppercase" }}>Search</button>
             </div>
             <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "8px" }}>{locationName} · {borough}</div>
+            <MoreInfo mtaAlerts={mtaAlerts} complaints={complaints} zip={activeZip} updatedAt={updatedAt} />
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: "48px", fontWeight: 300, letterSpacing: "-0.03em" }}>{mounted ? time.toLocaleTimeString() : "--:--:--"}</div>
