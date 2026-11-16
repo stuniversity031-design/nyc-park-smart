@@ -59,6 +59,7 @@ export default function ParkSmartDashboard() {
   const [exitModalOpen, setExitModalOpen] = useState(false);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
   const [liveMeters, setLiveMeters] = useState<{ street: string; between: string; hours: string; borough: string }[]>([]);
+  const [liveGarages, setLiveGarages] = useState<{ name: string; address: string; zip: string; borough: string; distance: number }[]>([]);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: "Hi! I am your NYC Park Smart assistant. Ask me anything about parking, traffic, MTA alerts, or street rules in your area." }
@@ -93,6 +94,7 @@ useEffect(() => {
   const fetchAllData = async (c: { lat: number; lon: number }, zip: string) => {
     setRouteSuggestion("Loading today's route...");
     fetch(`/api/meters?lat=${c.lat}&lon=${c.lon}`).then((r) => r.json()).then((d) => setLiveMeters(d.meters || [])).catch(() => setLiveMeters([]));
+    fetch(`/api/garages?zip=${zip}&lat=${c.lat}&lon=${c.lon}`).then((r) => r.json()).then((d) => setLiveGarages(d.garages || [])).catch(() => setLiveGarages([]));
     try {
       const [weatherRes, aspRes, routeRes, trafficRes, complaints311Res, mtaRes] = await Promise.all([
         fetch(`/api/weather?lat=${c.lat}&lon=${c.lon}`).then(r => r.json()),
@@ -259,21 +261,26 @@ return (
           </div>
         </div>
 
-        {/* GARAGE FINDER */}
+        {/* GARAGES */}
         <div style={{ gridColumn: "span 4", background: "#242628", borderRadius: "4px", padding: "20px", borderTop: "3px solid #F7C600" }}>
-          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "12px" }}>Garage Finder · {borough} · Sample data</div>
-          {garages.map((g, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < garages.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+          <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "4px" }}>Garage Finder · Near {activeZip}</div>
+          <div style={{ fontSize: "10px", color: "#666", marginBottom: "10px" }}>Source: NYC DCWP licensed garages and lots via NYC Open Data</div>
+          {liveGarages.length === 0 ? (
+            <div style={{ fontSize: "12px", color: "#888" }}>No licensed garages found nearby.</div>
+          ) : liveGarages.map((g, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: "12px", padding: "9px 0", borderBottom: i < liveGarages.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
               <div>
                 <div style={{ fontSize: "13px", fontWeight: 600 }}>{g.name}</div>
-                <div style={{ fontSize: "10px", color: "#2ECC71", marginTop: "2px" }}>Open · {g.dist} · {g.hours}</div>
+                <div style={{ fontSize: "10px", color: "#888", marginTop: "2px" }}>{g.address}, {g.borough}</div>
               </div>
-              <div style={{ fontSize: "15px", fontWeight: 700, color: "#F7C600" }}>{g.rate}</div>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "#F7C600", whiteSpace: "nowrap" }}>{g.distance} mi</div>
             </div>
           ))}
+          <div style={{ fontSize: "10px", color: "#666", marginTop: "10px" }}>Rates are not published in city data. Confirm at the garage.</div>
         </div>
 
-        {/* METERS */}
+        
+{/* METERS */}
         <div style={{ gridColumn: "span 4", background: "#242628", borderRadius: "4px", padding: "20px", borderTop: "3px solid #4A4D52" }}>
           <div style={{ fontSize: "10px", color: "#888", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "4px" }}>Parking Meters · Near {activeZip}</div>
           <div style={{ fontSize: "10px", color: "#666", marginBottom: "10px" }}>Source: NYC DOT via NYC Open Data · hours as posted</div>
