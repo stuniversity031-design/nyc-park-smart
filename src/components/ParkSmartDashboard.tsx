@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { getBoroughFromZip, GARAGES, METERS, Borough } from "@/lib/boroughData";
 import MoreInfo from "@/components/MoreInfo";
+import { NameEditor, VehicleList } from "@/components/Profile";
 
 interface WeatherData {
   current: {
@@ -50,7 +51,7 @@ export default function ParkSmartDashboard() {
   const [traffic, setTraffic] = useState<TrafficCorridor[]>([]);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [mtaAlerts, setMtaAlerts] = useState<MtaAlert[]>([]);
-  const [selectedVehicle, setSelectedVehicle] = useState("2003 Jaguar");
+  const [selectedVehicle, setSelectedVehicle] = useState("");
   const [zipInput, setZipInput] = useState("");
   const [activeZip, setActiveZip] = useState("10001");
   const [locationName, setLocationName] = useState("Midtown, Manhattan");
@@ -194,7 +195,7 @@ return (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
           <div>
             <div style={{ fontSize: "13px", color: "#F7C600", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>{greeting}</div>
-            <div style={{ fontSize: "40px", fontWeight: 800, letterSpacing: "-0.02em" }}>Michael</div>
+            <NameEditor />
             <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)", marginTop: "6px", maxWidth: "480px", lineHeight: 1.6 }}>
               {asp?.suspendedToday ? `ASP is suspended today for ${asp.suspensionReason}.` : "Standard alternate side rules are in effect."} {weather ? `${Math.round(weather.current.main.temp)}°F in ${borough}.` : ""}
             </div>
@@ -227,11 +228,7 @@ return (
           <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.6, marginBottom: "8px" }}>Alternate Side Parking</div>
           <div style={{ fontSize: "16px", fontWeight: 700 }}>{asp?.suspendedToday ? `Suspended — ${asp.suspensionReason}` : "No holiday suspension today. Check your posted street sign."}</div>
           {asp?.nextSuspension && <div style={{ fontSize: "11px", opacity: 0.7, marginTop: "6px" }}>Next suspension: {asp.nextSuspension.date} ({asp.nextSuspension.reason})</div>}
-          <div style={{ display: "flex", gap: "8px", marginTop: "14px", flexWrap: "wrap" }}>
-            {["2003 Jaguar", "2019 Accord"].map(v => (
-              <div key={v} onClick={() => setSelectedVehicle(v)} style={{ padding: "5px 12px", fontSize: "11px", fontWeight: 600, borderRadius: "2px", cursor: "pointer", background: selectedVehicle === v ? "#F7C600" : "rgba(255,255,255,0.12)", color: selectedVehicle === v ? "#1A1C1E" : "#fff" }}>{v}</div>
-            ))}
-          </div>
+          <VehicleList />
         </div>
 
         {/* WEATHER */}
